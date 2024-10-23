@@ -83,6 +83,7 @@ class AuthenticationController extends GetxController {
       Fluttertoast.showToast(msg: e);
     }, (r) {
       response.value = r;
+      authenticated.value = true;
       // save it to local
       SharedPrefs.setBool("authenticated", true);
       SharedPrefs.setString("token", response.value.token ?? "");
@@ -91,7 +92,7 @@ class AuthenticationController extends GetxController {
       SharedPrefs.setString("role", response.value.user?.role ?? "");
       emailController.clear();
       passwordController.clear();
-      Get.offAll(() => LandingPage());
+      Get.offAll(() => HomePage());
     });
     loading(false);
     // }

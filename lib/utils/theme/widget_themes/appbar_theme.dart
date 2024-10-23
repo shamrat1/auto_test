@@ -1,5 +1,6 @@
 import 'package:auto_ichi/utils/constants/sizes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../constants/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -10,6 +11,8 @@ class TAppBarTheme {
   static AppBarTheme lightAppBarTheme = AppBarTheme(
     elevation: 0,
     centerTitle: true,
+    systemOverlayStyle:
+        const SystemUiOverlayStyle(statusBarBrightness: Brightness.light),
     scrolledUnderElevation: 0,
     backgroundColor: Colors.transparent,
     surfaceTintColor: Colors.transparent,
@@ -27,6 +30,8 @@ class TAppBarTheme {
   static AppBarTheme darkAppBarTheme = AppBarTheme(
     elevation: 0,
     centerTitle: false,
+    systemOverlayStyle:
+        const SystemUiOverlayStyle(statusBarBrightness: Brightness.dark),
     scrolledUnderElevation: 0,
     backgroundColor: Colors.transparent,
     surfaceTintColor: Colors.transparent,

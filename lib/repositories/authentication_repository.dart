@@ -3,8 +3,6 @@ import 'package:auto_ichi/utils/http/http_client.dart';
 import 'package:dartz/dartz.dart';
 
 class AuthenticationRepository {
-  final THttpHelper _client = THttpHelper();
-
   Future<Either<String, UserResponse>> login(
       String email, String password) async {
     try {

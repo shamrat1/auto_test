@@ -1,5 +1,6 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:auto_ichi/controllers/authentication_controller.dart';
+import 'package:auto_ichi/controllers/bookings_controller.dart';
 import 'package:auto_ichi/screens/calendar_screen.dart';
 import 'package:auto_ichi/screens/dashboard_screen.dart';
 import 'package:auto_ichi/screens/profile_screen.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 void main() async {
   WidgetsBinding binding = WidgetsFlutterBinding.ensureInitialized();
@@ -76,6 +78,7 @@ class LandingPage extends StatefulWidget {
 class _LandingPageState extends State<LandingPage> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
+  final BookingsController _bookingsController = Get.put(BookingsController());
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,12 +87,12 @@ class _LandingPageState extends State<LandingPage> {
           ? FloatingActionButton(
               onPressed: () {},
               child: Container(
-                decoration: const BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: LinearGradient(
                     colors: [
-                      Color(0xffFF679B),
-                      Color(0xffFF7B51),
+                      Theme.of(context).primaryColor,
+                      const Color(0xffFF7B51),
                     ],
                   ),
                 ),
@@ -107,11 +110,11 @@ class _LandingPageState extends State<LandingPage> {
         onPageChanged: (val) => setState(() {
           _currentPage = val;
         }),
-        children: const [
-          DashboardScreen(),
+        children: [
+          const DashboardScreen(),
           CalendarScreen(),
           CalendarScreen(),
-          ProfileScreen(),
+          const ProfileScreen(),
         ],
       ),
       bottomNavigationBar: AnimatedBottomNavigationBar(
@@ -130,6 +133,12 @@ class _LandingPageState extends State<LandingPage> {
         onTap: (index) {
           setState(() {
             _currentPage = index;
+            if (index == 1) {
+              _bookingsController.setView(CalendarView.month);
+            }
+            if (index == 2) {
+              _bookingsController.setView(CalendarView.day);
+            }
             _pageController.animateToPage(index,
                 duration: const Duration(milliseconds: 500),
                 curve: Curves.easeIn);

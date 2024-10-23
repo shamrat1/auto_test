@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:auto_ichi/controllers/authentication_controller.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class THttpHelper {
@@ -6,8 +8,13 @@ class THttpHelper {
       'http://yasin-shamrat.com/api/'; // Replace with your API base URL
 
   // Helper method to make a GET request
-  static Future<Map<String, dynamic>> get(String endpoint) async {
-    final response = await http.get(Uri.parse('$baseUrl/$endpoint'));
+  static Future<dynamic> get(String endpoint) async {
+    print(Uri.parse('$baseUrl$endpoint'));
+    print(_getHeaders());
+    final response =
+        await http.get(Uri.parse('$baseUrl$endpoint'), headers: _getHeaders());
+    // print(response.statusCode);
+    // print(response.body);
     return _handleResponse(response);
   }
 
@@ -17,9 +24,10 @@ class THttpHelper {
     print('$baseUrl$endpoint');
     print(data);
     print(contentType);
+    print(_getHeaders());
     final response = await http.post(
       Uri.parse('$baseUrl$endpoint'),
-      headers: {'Content-Type': contentType ?? 'application/json'},
+      headers: _getHeaders(),
       body: contentType != null
           ? Uri.encodeQueryComponent(data.toString())
           : json.encode(data),
@@ -33,7 +41,7 @@ class THttpHelper {
   static Future<Map<String, dynamic>> put(String endpoint, dynamic data) async {
     final response = await http.put(
       Uri.parse('$baseUrl$endpoint'),
-      headers: {'Content-Type': 'application/json'},
+      headers: _getHeaders(),
       body: json.encode(data),
     );
     return _handleResponse(response);
@@ -41,16 +49,30 @@ class THttpHelper {
 
   // Helper method to make a DELETE request
   static Future<Map<String, dynamic>> delete(String endpoint) async {
-    final response = await http.delete(Uri.parse('$baseUrl/$endpoint'));
+    final response = await http.delete(Uri.parse('$baseUrl$endpoint'),
+        headers: _getHeaders());
     return _handleResponse(response);
   }
 
   // Handle the HTTP response
-  static Map<String, dynamic> _handleResponse(http.Response response) {
+  static _handleResponse(http.Response response) {
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
-      throw Exception('Failed to load data: ${response.statusCode}');
+      throw Exception('${response.statusCode}\n${response.body}');
     }
+  }
+
+  static Map<String, String> _getHeaders() {
+    var token = Get.find<AuthenticationController>().response.value.token;
+    if (token != null) {
+      return {
+        "Authorization": "Bearer $token",
+        "Accept": "applicatino/json",
+      };
+    }
+    return {
+      "Accept": "application/json",
+    };
   }
 }
