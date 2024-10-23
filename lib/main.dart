@@ -37,7 +37,7 @@ class _MyAppState extends State<MyApp> {
       setState(() {
         _authenticated = val;
       });
-      FlutterNativeSplash.remove();
+      // FlutterNativeSplash.remove();
     });
   }
 
