@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 class THttpHelper {
   static const String baseUrl =
-      'http://yasin-shamrat.com'; // Replace with your API base URL
+      'http://yasin-shamrat.com/api/'; // Replace with your API base URL
 
   // Helper method to make a GET request
   static Future<Map<String, dynamic>> get(String endpoint) async {

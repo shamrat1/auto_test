@@ -1,5 +1,9 @@
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
-import 'package:auto_ichi/screens/signin.dart';
+import 'package:auto_ichi/controllers/authentication_controller.dart';
+import 'package:auto_ichi/screens/calendar_screen.dart';
+import 'package:auto_ichi/screens/dashboard_screen.dart';
+import 'package:auto_ichi/screens/profile_screen.dart';
+import 'package:auto_ichi/screens/signin_screen.dart';
 import 'package:auto_ichi/utils/constants/colors.dart';
 import 'package:auto_ichi/utils/constants/sizes.dart';
 import 'package:auto_ichi/utils/storage/shared_prefs.dart';
@@ -8,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 
 void main() async {
   WidgetsBinding binding = WidgetsFlutterBinding.ensureInitialized();
@@ -28,19 +33,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool _authenticated = false;
-
-  @override
-  void initState() {
-    super.initState();
-    SharedPrefs.getBool("authenticated").then((val) {
-      setState(() {
-        _authenticated = val;
-      });
-      // FlutterNativeSplash.remove();
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -48,14 +40,29 @@ class _MyAppState extends State<MyApp> {
       splitScreenMode: false,
       minTextAdapt: true,
       builder: (context, _) {
-        return MaterialApp(
+        return GetMaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'Dokan',
           theme: TAppTheme.lightTheme,
-          home: _authenticated ? const LandingPage() : const SigninPage(),
+          home: HomePage(),
         );
       },
     );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  HomePage({super.key});
+  final AuthenticationController _controller =
+      Get.put(AuthenticationController());
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      if (_controller.authenticated.value) {
+        return const LandingPage();
+      }
+      return const SigninScreen();
+    });
   }
 }
 
@@ -100,14 +107,19 @@ class _LandingPageState extends State<LandingPage> {
         onPageChanged: (val) => setState(() {
           _currentPage = val;
         }),
-        children: const [],
+        children: const [
+          DashboardScreen(),
+          CalendarScreen(),
+          CalendarScreen(),
+          ProfileScreen(),
+        ],
       ),
       bottomNavigationBar: AnimatedBottomNavigationBar(
         iconSize: TSizes.iconMd,
         icons: const [
-          Icons.home_rounded,
           Icons.dashboard_rounded,
-          Icons.shopping_cart,
+          Icons.calendar_month,
+          Icons.calendar_today,
           Icons.person,
         ],
         activeIndex: _currentPage,
