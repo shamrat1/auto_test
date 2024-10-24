@@ -44,7 +44,7 @@ class _MyAppState extends State<MyApp> {
       builder: (context, _) {
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'Dokan',
+          title: 'Ichiban Auto',
           theme: TAppTheme.lightTheme,
           home: HomePage(),
         );

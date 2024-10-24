@@ -24,6 +24,10 @@ class AuthenticationController extends GetxController {
     super.onInit();
   }
 
+  bool isAdmin() {
+    return (response.value.user?.role ?? "") == "admin";
+  }
+
   bool _validate() {
     if (emailController.text == "") {
       emailError.value = "Username is required";

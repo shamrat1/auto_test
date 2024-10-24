@@ -1,6 +1,9 @@
 import 'package:json_annotation/json_annotation.dart';
 part 'user.g.dart';
 
+List<User> userFromJsonList(List<dynamic> str) =>
+    List<User>.from(str.map((x) => User.fromJson(x)));
+
 @JsonSerializable(fieldRename: FieldRename.snake)
 class User {
   int? id;
