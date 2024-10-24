@@ -114,7 +114,7 @@ class _LandingPageState extends State<LandingPage> {
           const DashboardScreen(),
           CalendarScreen(),
           CalendarScreen(),
-          const ProfileScreen(),
+          ProfileScreen(),
         ],
       ),
       bottomNavigationBar: AnimatedBottomNavigationBar(

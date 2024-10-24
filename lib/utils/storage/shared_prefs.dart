@@ -10,6 +10,8 @@ class SharedPrefs {
     return _prefs!;
   }
 
+  static Future<bool> delete(String key) async => await _prefs!.remove(key);
+
   //for set value
   static Future<bool> setBool(String key, bool value) async =>
       await _prefs!.setBool(key, value);

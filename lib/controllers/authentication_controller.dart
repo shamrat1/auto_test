@@ -2,6 +2,7 @@ import 'package:auto_ichi/main.dart';
 import 'package:auto_ichi/models/user.dart';
 import 'package:auto_ichi/models/user_response.dart';
 import 'package:auto_ichi/repositories/authentication_repository.dart';
+import 'package:auto_ichi/screens/signin_screen.dart';
 import 'package:auto_ichi/utils/storage/shared_prefs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -99,12 +100,14 @@ class AuthenticationController extends GetxController {
       Get.offAll(() => HomePage());
     });
     loading(false);
-    // }
+  }
 
-    // void logout() async {
-    //   response.value = LoginModel();
-    //   await HiveService<LoginModel>().delete("authenticated");
-    //   Get.offAll(() => const LoginScreen());
-    // }
+  void logout() async {
+    SharedPrefs.delete("authenticated");
+    SharedPrefs.delete("token");
+    SharedPrefs.delete("name");
+    SharedPrefs.delete("email");
+    SharedPrefs.delete("role");
+    Get.offAll(() => SigninScreen());
   }
 }

@@ -28,9 +28,7 @@ class THttpHelper {
     final response = await http.post(
       Uri.parse('$baseUrl$endpoint'),
       headers: _getHeaders(),
-      body: contentType != null
-          ? Uri.encodeQueryComponent(data.toString())
-          : json.encode(data),
+      body: data,
     );
     print(response.statusCode);
     print(response.body);
@@ -63,7 +61,7 @@ class THttpHelper {
     }
   }
 
-  static Map<String, String> _getHeaders() {
+  static Map<String, String>? _getHeaders() {
     var token = Get.find<AuthenticationController>().response.value.token;
     if (token != null) {
       return {
