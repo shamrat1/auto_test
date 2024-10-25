@@ -5,9 +5,12 @@ import 'package:auto_ichi/models/user.dart';
 import 'package:auto_ichi/repositories/booking_repository.dart';
 import 'package:auto_ichi/screens/booking_edit_screen.dart';
 import 'package:auto_ichi/screens/booking_screen.dart';
+import 'package:auto_ichi/screens/calendar_screen.dart';
+import 'package:auto_ichi/widgets/calendar_appointments_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_calendar/calendar.dart';
 
 class BookingsController extends GetxController {
@@ -18,10 +21,11 @@ class BookingsController extends GetxController {
   BookingRepository _repository = BookingRepository();
   RxBool loading = false.obs;
   RxList<Booking> bookings = <Booking>[].obs;
+  RxList<Meeting> myMeetings = <Meeting>[].obs;
   RxList<User> mechanics = <User>[].obs;
   Rx<int> selectedMechanicID = 0.obs;
   Rx<Booking> selectedBooking = Booking().obs;
-
+  Rx<String> selectedStatus = "".obs;
   @override
   void onInit() {
     getBookings();
@@ -35,13 +39,15 @@ class BookingsController extends GetxController {
     selectedMechanicID(m.id);
   }
 
-  void getBookings() async {
+  Future<void> getBookings({String? start, String? end}) async {
     loading(true);
+
     var response = await _repository.getBookings();
     response.fold((error) {
       Fluttertoast.showToast(msg: error);
     }, (values) {
       bookings.value = values;
+      myMeetings.value = getDataSource();
     });
     loading(false);
   }
@@ -49,10 +55,31 @@ class BookingsController extends GetxController {
   void getMechanics() async {
     loading(true);
     var response = await _repository.getMechanics();
+
     response.fold((error) {
       Fluttertoast.showToast(msg: error);
     }, (values) {
       mechanics.value = values;
+    });
+    loading(false);
+  }
+
+  void updateBooking() async {
+    if (selectedBooking.value.id == null) return;
+    loading(true);
+    var response = await _repository.updateBooking(selectedBooking.value.id!, {
+      "status": selectedStatus.value,
+      "mechanic_id": selectedMechanicID.value.toString(),
+    });
+
+    response.fold((error) {
+      Fluttertoast.showToast(msg: error, backgroundColor: Colors.red);
+    }, (values) {
+      getBookings();
+      Fluttertoast.showToast(
+          msg: "Booking Updated.", backgroundColor: Colors.green);
+      Get.back();
+      Get.back();
     });
     loading(false);
   }
@@ -68,6 +95,15 @@ class BookingsController extends GetxController {
         selectedBooking(booking);
         Get.to(() => const BookingScreen());
       }
+    } else if ((details.appointments?.length ?? 0) > 1) {
+      showModalBottomSheet(
+          context: Get.context!,
+          builder: (context) {
+            return CalendarAppointmentsWidget(
+              selectedDate: details.date!,
+              meetings: details.appointments ?? [],
+            );
+          });
     }
   }
 
@@ -121,8 +157,13 @@ class BookingsController extends GetxController {
   void onViewChanged(ViewChangedDetails details) {
     if (currentStartDate.value != details.visibleDates.first &&
         currentEndDate.value != details.visibleDates.last) {
-      currentStartDate(details.visibleDates.first);
-      currentEndDate(details.visibleDates.last);
+      // currentStartDate(details.visibleDates.first);
+      // currentEndDate(details.visibleDates.last);
+      print(DateFormat("d-M-y hh:mm a").format(details.visibleDates.first));
+      print(DateFormat("d-M-y hh:mm a").format(details.visibleDates.last));
+      getBookings(
+          start: DateFormat("d-M-y hh:mm a").format(details.visibleDates.first),
+          end: DateFormat("d-M-y hh:mm a").format(details.visibleDates.last));
     }
   }
 }

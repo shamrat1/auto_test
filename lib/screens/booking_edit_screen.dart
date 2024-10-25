@@ -67,7 +67,8 @@ class _BookingEditScreenState extends State<BookingEditScreen> {
                         hint: const Text('Select Status'),
                         value: _controller.selectedBooking.value.status ??
                             "pending",
-                        onChanged: (String? newValue) {},
+                        onChanged: (String? newValue) =>
+                            _controller.selectedStatus(newValue),
                         items: _status.map((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
@@ -125,7 +126,11 @@ class _BookingEditScreenState extends State<BookingEditScreen> {
                 ),
               ),
               const Spacer(),
-              ElevatedButton(onPressed: () {}, child: const Text("Update")),
+              ElevatedButton(
+                  onPressed: () => _controller.updateBooking(),
+                  child: _controller.loading.value
+                      ? const CircularProgressIndicator.adaptive()
+                      : const Text("Update")),
               SizedBox(
                 height: 20.h,
               ),

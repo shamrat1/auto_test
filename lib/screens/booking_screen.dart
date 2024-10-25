@@ -1,7 +1,5 @@
 import 'package:auto_ichi/controllers/authentication_controller.dart';
 import 'package:auto_ichi/controllers/bookings_controller.dart';
-import 'package:auto_ichi/screens/booking_edit_screen.dart';
-import 'package:auto_ichi/utils/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -58,11 +56,13 @@ class _BookingScreenState extends State<BookingScreen> {
                 ),
               ),
               _getDataRow("Manufacturer",
-                  _controller.selectedBooking.value?.carMake ?? "N/A"),
-              _getDataRow("Model",
-                  _controller.selectedBooking.value?.carModel ?? "N/A"),
+                  _controller.selectedBooking.value.carMake ?? "N/A"),
               _getDataRow(
-                  "Year", _controller.selectedBooking.value?.carYear ?? "N/A"),
+                  "Model", _controller.selectedBooking.value.carModel ?? "N/A"),
+              _getDataRow(
+                  "Year", _controller.selectedBooking.value.carYear ?? "N/A"),
+              _getDataRow("Registration No",
+                  _controller.selectedBooking.value.registrationPlate ?? "N/A"),
               SizedBox(
                 height: 20.h,
               ),

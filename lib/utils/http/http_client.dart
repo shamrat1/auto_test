@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:auto_ichi/controllers/authentication_controller.dart';
+import 'package:auto_ichi/models/validation_error_response.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -56,6 +57,11 @@ class THttpHelper {
   static _handleResponse(http.Response response) {
     if (response.statusCode == 200) {
       return json.decode(response.body);
+    } else if (response.statusCode == 201) {
+      return json.decode(response.body);
+    } else if (response.statusCode == 422) {
+      var err = ValidationErrorResponse.fromJson(json.decode(response.body));
+      throw Exception(err.message ?? "");
     } else {
       throw Exception('${response.statusCode}\n${response.body}');
     }

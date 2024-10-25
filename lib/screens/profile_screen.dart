@@ -56,8 +56,9 @@ class ProfileScreen extends StatelessWidget {
             Expanded(
               child: ListView(
                 children: [
-                  _buildMenuItem(Icons.article, 'Create Booking',
-                      () => Get.to(() => const CreateBookingScreen())),
+                  if (_controller.isAdmin())
+                    _buildMenuItem(Icons.article, 'Create Booking',
+                        () => Get.to(() => CreateBookingScreen())),
                   _buildMenuItem(Icons.edit, 'Edit Profile', () {}),
                   _buildMenuItem(Icons.lock, 'Change Password', () {}),
                   _buildMenuItem(Icons.settings, 'Settings', () {}),
