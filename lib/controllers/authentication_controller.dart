@@ -1,7 +1,9 @@
 import 'package:auto_ichi/main.dart';
+import 'package:auto_ichi/models/dashboard.dart';
 import 'package:auto_ichi/models/user.dart';
 import 'package:auto_ichi/models/user_response.dart';
 import 'package:auto_ichi/repositories/authentication_repository.dart';
+import 'package:auto_ichi/repositories/booking_repository.dart';
 import 'package:auto_ichi/screens/signin_screen.dart';
 import 'package:auto_ichi/utils/storage/shared_prefs.dart';
 import 'package:flutter/material.dart';
@@ -13,12 +15,13 @@ class AuthenticationController extends GetxController {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final AuthenticationRepository _repository = AuthenticationRepository();
+  final BookingRepository _bookingRepository = BookingRepository();
   Rx<UserResponse> response = UserResponse().obs;
   RxBool loading = false.obs;
   RxBool authenticated = false.obs;
   RxString emailError = "".obs;
   RxString passwordError = "".obs;
-
+  Rx<Dashboard> dashboard = Dashboard().obs;
   @override
   void onInit() {
     initPrefs();
@@ -75,6 +78,17 @@ class AuthenticationController extends GetxController {
     emailController.dispose();
     passwordController.dispose();
     super.onClose();
+  }
+
+  void getDashboard() async {
+    loading(true);
+    var response = await _bookingRepository.getDashboard();
+    response.fold((error) {
+      Fluttertoast.showToast(msg: error);
+    }, (values) {
+      dashboard.value = values;
+    });
+    loading(false);
   }
 
   void login() async {
